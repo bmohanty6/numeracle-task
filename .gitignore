@@ -34,3 +34,6 @@ build/
 
 ### Others ###
 .DS_Store
+
+#### terraform ###
+terraform/.terraform*
