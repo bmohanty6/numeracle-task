@@ -37,3 +37,4 @@ build/
 
 #### terraform ###
 terraform/.terraform*
+terraform/backend/.terraform*

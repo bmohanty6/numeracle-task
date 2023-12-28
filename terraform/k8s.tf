@@ -5,46 +5,45 @@ provider "kubernetes" {
   exec {
     api_version = "client.authentication.k8s.io/v1beta1"
     command     = "aws"
-    # This requires the awscli to be installed locally where Terraform is executed
     args = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
   }
 }
 resource "kubernetes_namespace_v1" "numeracle" {
   metadata {
     annotations = {
-      name = "numeracle"
+      name = var.namespace
     }
     labels = {
-      app = "DemoApp"
+      app = var.k8s_app_name
     }
-    name = "numeracle"
+    name = var.namespace
   }
 }
 resource "kubernetes_deployment_v1" "numeracle-demo-app" {
   metadata {
-    name = "demo-app"
-    namespace = "numeracle"
+    name = var.k8s_app_name
+    namespace = var.namespace
     labels = {
-      app = "DemoApp"
+      app = var.k8s_app_name
     }
   }
   spec {
     replicas = 1
     selector {
       match_labels = {
-        app = "DemoApp"
+        app = var.k8s_app_name
       }
     }
     template {
       metadata {
         labels = {
-          app = "DemoApp"
+          app = var.k8s_app_name
         }
       }
       spec {
         container {
-          image = "bmohanty6/numeracle-demo:latest"
-          name  = "demo-app"
+          image = var.image_name
+          name  = var.k8s_app_name
           port {
             name = "default"
             container_port = 8080
@@ -60,14 +59,6 @@ resource "kubernetes_deployment_v1" "numeracle-demo-app" {
               memory = "256Mi"
             }
           }
-          liveness_probe {
-            http_get {
-              path = "/"
-              port = 8080
-            }
-            initial_delay_seconds = 3
-            period_seconds        = 3
-          }
         }
       }
     }
@@ -76,18 +67,18 @@ resource "kubernetes_deployment_v1" "numeracle-demo-app" {
 
 resource "kubernetes_service_v1" "numeracle-demo-app" {
   metadata {
-    name = "demo-app"
-    namespace = "numeracle"
+    name = var.k8s_app_name
+    namespace = var.namespace
     annotations = {
         "service.beta.kubernetes.io/aws-load-balancer-type" = "nlb"
     }
   }
   spec {
     selector = {
-      app = "DemoApp"
+      app = var.k8s_app_name
     }
     port {
-      port        = 8080
+      port        = 80
       target_port = 8080
       protocol    = "TCP"
     }
@@ -96,37 +87,3 @@ resource "kubernetes_service_v1" "numeracle-demo-app" {
   wait_for_load_balancer = true
 }
 
-# resource "kubernetes_ingress_v1" "numeracle-demo-app" {
-#   wait_for_load_balancer = true
-#   metadata {
-#     name = "demo-app"
-#   }
-#   spec {
-#     ingress_class_name = "numeracle-ingress"
-#     rule {
-#       http {
-#         path {
-#           path = "/*"
-#           backend {
-#             service {
-#               name = kubernetes_service_v1.numeracle-demo-app.metadata.0.name
-#               port {
-#                 number = 8080
-#               }
-#             }
-#           }
-#         }
-#       }
-#     }
-#   }
-# }
-
-# Display load balancer hostname (typically present in AWS)
-output "service_all" {
-  value = kubernetes_service_v1.numeracle-demo-app
-}
-
-# # Display load balancer IP (typically present in GCP, or using Nginx ingress controller)
-# output "load_balancer_ip" {
-#   value = kubernetes_ingress_v1.numeracle-demo-app.status.0.load_balancer.0.ingress.0.ip
-# }

@@ -12,12 +12,16 @@ variable "eks_version" {
   type = string
   default = "1.28"
 }
-variable "vpc_id" {
+variable "eks_managed_node_groups" {  
+}
+variable "namespace" {
+  type= string
+  default = "numeracle"
+}
+variable "k8s_app_name" {
   type = string
 }
-variable "subnet_ids" {
-  type = list(string)
-}
-variable "eks_managed_node_groups" {
-  
+variable "image_name" {
+  type = string
+  default = "bmohanty6/numeracle-demo:latest"
 }
