@@ -42,7 +42,7 @@ resource "kubernetes_deployment_v1" "numeracle-demo-app" {
       }
       spec {
         container {
-          image = "bmohanty6/numeracle-demo:v11"
+          image = "bmohanty6/numeracle-demo:latest"
           name  = "demo-app"
           resources {
             limits = {
