@@ -23,6 +23,7 @@ resource "kubernetes_namespace_v1" "numeracle" {
 resource "kubernetes_deployment_v1" "numeracle-demo-app" {
   metadata {
     name = "demo-app"
+    namespace = "numeracle"
     labels = {
       app = "DemoApp"
     }
@@ -44,6 +45,11 @@ resource "kubernetes_deployment_v1" "numeracle-demo-app" {
         container {
           image = "bmohanty6/numeracle-demo:latest"
           name  = "demo-app"
+          ports {
+            name = "default"
+            containerPort = 8080
+            protocol = "http"
+          }
           resources {
             limits = {
               cpu    = "0.5"
@@ -71,9 +77,10 @@ resource "kubernetes_deployment_v1" "numeracle-demo-app" {
 resource "kubernetes_service_v1" "numeracle-demo-app" {
   metadata {
     name = "demo-app"
-    # annotations = {
-    #     "service.beta.kubernetes.io/aws-load-balancer-type" = "nlb"
-    # }
+    namespace = "numeracle"
+    annotations = {
+        "service.beta.kubernetes.io/aws-load-balancer-type" = "nlb"
+    }
   }
   spec {
     selector = {
@@ -82,7 +89,7 @@ resource "kubernetes_service_v1" "numeracle-demo-app" {
     port {
       port        = 8080
       target_port = 8080
-      protocol    = "TCP"
+      protocol    = "http"
     }
     type = "LoadBalancer"
   }
@@ -115,11 +122,11 @@ resource "kubernetes_service_v1" "numeracle-demo-app" {
 # }
 
 # Display load balancer hostname (typically present in AWS)
-output "load_balancer_hostname" {
-  value = kubernetes_ingress_v1.numeracle-demo-app.status.0.load_balancer.0.ingress.0.hostname
+output "service_all" {
+  value = kubernetes_service_v1.numeracle-demo-app
 }
 
-# Display load balancer IP (typically present in GCP, or using Nginx ingress controller)
-output "load_balancer_ip" {
-  value = kubernetes_ingress_v1.numeracle-demo-app.status.0.load_balancer.0.ingress.0.ip
-}
+# # Display load balancer IP (typically present in GCP, or using Nginx ingress controller)
+# output "load_balancer_ip" {
+#   value = kubernetes_ingress_v1.numeracle-demo-app.status.0.load_balancer.0.ingress.0.ip
+# }
