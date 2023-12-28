@@ -45,10 +45,10 @@ resource "kubernetes_deployment_v1" "numeracle-demo-app" {
         container {
           image = "bmohanty6/numeracle-demo:latest"
           name  = "demo-app"
-          ports {
+          port {
             name = "default"
-            containerPort = 8080
-            protocol = "http"
+            container_port = 8080
+            protocol = "TCP"
           }
           resources {
             limits = {
@@ -89,7 +89,7 @@ resource "kubernetes_service_v1" "numeracle-demo-app" {
     port {
       port        = 8080
       target_port = 8080
-      protocol    = "http"
+      protocol    = "TCP"
     }
     type = "LoadBalancer"
   }
