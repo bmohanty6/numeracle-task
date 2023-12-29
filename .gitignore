@@ -38,3 +38,4 @@ build/
 #### terraform ###
 terraform/.terraform*
 terraform/backend/.terraform*
+terraform/files/*.zip

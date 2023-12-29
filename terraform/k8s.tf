@@ -5,7 +5,7 @@ provider "kubernetes" {
   exec {
     api_version = "client.authentication.k8s.io/v1beta1"
     command     = "aws"
-    args = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
+    args        = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
   }
 }
 resource "kubernetes_namespace_v1" "numeracle" {
@@ -21,7 +21,7 @@ resource "kubernetes_namespace_v1" "numeracle" {
 }
 resource "kubernetes_deployment_v1" "numeracle-demo-app" {
   metadata {
-    name = var.k8s_app_name
+    name      = var.k8s_app_name
     namespace = var.namespace
     labels = {
       app = var.k8s_app_name
@@ -45,9 +45,9 @@ resource "kubernetes_deployment_v1" "numeracle-demo-app" {
           image = var.image_name
           name  = var.k8s_app_name
           port {
-            name = "default"
+            name           = "default"
             container_port = 8080
-            protocol = "TCP"
+            protocol       = "TCP"
           }
           resources {
             limits = {
@@ -67,10 +67,10 @@ resource "kubernetes_deployment_v1" "numeracle-demo-app" {
 
 resource "kubernetes_service_v1" "numeracle-demo-app" {
   metadata {
-    name = var.k8s_app_name
+    name      = var.k8s_app_name
     namespace = var.namespace
     annotations = {
-        "service.beta.kubernetes.io/aws-load-balancer-type" = "nlb"
+      "service.beta.kubernetes.io/aws-load-balancer-type" = "nlb"
     }
   }
   spec {
