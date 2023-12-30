@@ -1,5 +1,29 @@
 # DevOps Usecase for Numeracle
-This repository contains three components:
+## Requirement provided by Numeracle:
+### Use case 1 – Deploy Spring boot app in EKS cluster.
+<table>
+  <tr><th>#</th><th>Tasks</th><th>Details</th></tr>
+  <tr><td>1</td><td>Build and push code to GIT repo</td><td>https://www.geeksforgeeks.org/deploy-a-spring-boot-application-with-aws/
+
+Follow until step 5 for building the app, make sure it is running locally.
+Push code to any of GIT repo of your choice</td></tr>
+  <tr><td>2</td><td>CI/CD setup</td><td>Use any CI/CD of your choice , build and deploy docker image to public docker
+
+</td></tr>
+  <tr><td>3</td><td>Spring boot docker image</td><td>Push docker image to public docker
+
+</td></tr>
+  <tr><td>4</td><td>Running app in EKS cluster</td><td>Build EKS Cluster<br/>
+Install EKS load balancer (Ingress)<br/>
+Define a name space<br/>
+Deploy the spring boot docker image</td></tr>
+  <tr><td>5</td><td>Enable application monitoring for the deployment</td><td>Cloud watch Logging, move logs to s3 bucket<br/>
+Amazon CloudWatch Synthetics</td></tr>
+  <tr><td>6</td><td>Automate everything with terraform from 3- 5</td><td></td></tr>
+</table>
+
+ 
+This repository contains four components:
 - Java springboot source code from https://start.spring.io/
 - Dockerfile to build the docker image of the demo application
 - Terraform code to build the infrastructure and deploy demo application
