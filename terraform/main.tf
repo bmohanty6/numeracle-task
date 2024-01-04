@@ -84,6 +84,7 @@ module "eks" {
     }
   }
   manage_aws_auth_configmap   = true
+  enable_irsa                 = true
   create_cloudwatch_log_group = true
 
 
@@ -101,5 +102,3 @@ resource "aws_key_pair" "eks_node_key_default" {
   key_name   = "eks_node_key_default"
   public_key = file("./files/eks_node_key_default.pub")
 }
-
-
